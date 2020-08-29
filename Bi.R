@@ -1,7 +1,6 @@
-
-
 Bi <- function(data, var = c(seq(1,ncol(data))), target)
-{
+{ print("amhere")
+  data = movemydfs_categorical_numeric(data)
   if(!is.data.frame(data))
     stop("The given object is not a data frame")
   
@@ -72,4 +71,48 @@ Bi <- function(data, var = c(seq(1,ncol(data))), target)
       
     }
   }
+  print("amherealso")
+}
+
+
+#Function : rearrange the columns so that they are grouped 
+#according to datatype nemeric vs categorical.
+
+movemydfs_categorical_numeric <-function(data)
+{
+  temp <- numeric()
+  temp <-c()
+  t = ncol(data)
+  
+  
+  for(i in 1:ncol(data))
+  {
+    
+    tt=table(data[,i])#Cross tabulation
+    w = as.data.frame(tt)
+    if (dim(w)[1]<=10)#Checking if there are <10factors
+    { 
+      print(paste("am categorical",names(data)[i],sep="="))
+      data[,ncol(data)+1] =data[,i] 
+      
+      #Converting the categorical columns to Factors
+      data[,ncol(data)] <- as.factor(data[,ncol(data)]) 
+      temp<-append(temp,i)
+    }
+    
+  } 
+  
+  j=1 #Creating a new categorical column at the end
+  for (i in temp)
+  {
+    names(data)[t+j]= names(data)[i]  
+    j=j+1
+  }
+  
+  data = data[-temp] #deleting the duplicate categorical cols
+  #View(data)
+  q=length(temp)
+  print(paste("Total cols =",ncol(data),"categorical cols = ",q,"categorical at the end"))
+  #print(class(data))
+  return (data)
 }
